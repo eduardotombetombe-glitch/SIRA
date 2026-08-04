@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIRA - Mi Panel de Aprendizaje</title>
+
+    <!-- Icono de pestaña -->
+    <link rel="icon" href="logo-sira.jpeg" type="image/jpeg">
+
+    <style>
+        /* ===========================
+           CONFIGURACIÓN GENERAL
+        =========================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(
+                135deg,
+                #FFB7D5 0%,
+                #B79DFF 30%,
+                #6FD9FF 65%,
+                #8EF7C8 100%
+            );
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 650px;
+            height: 650px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .35);
+            bottom: -180px;
+            left: -120px;
+            filter: blur(100px);
+            z-index: -1;
+        }
+
+        /* ===========================
+                MENÚ / NAVBAR
+        =========================== */
+        .navbar {
+            width: 100%;
+            height: 80px;
+            background: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 60px;
+            box-shadow: 0 5px 20px rgba(0,0,0,.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #5B4EE5;
+        }
+
+        .logo-header {
+            height: 70px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo span {
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        /* Indicadores de Gamificación en Header */
+        .student-stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-badge {
+            background: #F0EEFF;
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            color: #5145CD;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .user-profile-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #FF6FAE;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+            border: 3px solid #5145CD;
+        }
+
+        .btn-logout {
+            background: #FF6FAE;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: .3s;
+            font-size: 14px;
+        }
+
+        .btn-logout:hover {
+            background: #e65593;
+        }
+
+        /* ===========================
+           CONTENIDO DEL DASHBOARD
+        =========================== */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* Banner de Bienvenida */
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            margin-bottom: 40px;
+        }
+
+        .welcome-text h1 {
+            color: #5145CD;
+            font-size: 36px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-text p {
+            color: #555;
+            font-size: 18px;
+        }
+
+        .progress-bar-container {
+            margin-top: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            height: 16px;
+            width: 300px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 65%;
+            background: linear-gradient(90deg, #8EF7C8, #6FD9FF);
+            border-radius: 12px;
+        }
+
+        /* Secciones de Módulos */
+        .section-title {
+            color: #5145CD;
+            font-size: 28px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .module-card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            transition: 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(81, 69, 205, 0.15);
+        }
+
+        .module-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .module-card h3 {
+            color: #5145CD;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .module-card p {
+            color: #555;
+            font-size: 16px;
+            line-height: 24px;
+            margin-bottom: 20px;
+        }
+
+        .btn-start {
+            background: #5145CD;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            text-align: center;
+            transition: 0.3s;
+            display: block;
+        }
+
+        .btn-start:hover {
+            background: #4435d6;
+        }
+
+        /* Sección de Logros e Insignias */
+        .achievements-section {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            margin-bottom: 50px;
+        }
+
+        .badges-grid {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .badge-item {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            width: 140px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+
+        .badge-item:hover {
+            transform: scale(1.05);
+        }
+
+        .badge-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .badge-item p {
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .badge-locked {
+            opacity: 0.4;
+            filter: grayscale(1);
+        }
+
+        /* ===========================
+                PIE DE PÁGINA / FOOTER
+        =========================== */
+        .footer {
+            background: white;
+            color: #444;
+            padding: 40px 60px 20px;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 25px auto 0;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MENÚ / NAVBAR -->
+    <header class="navbar">
+        <div class="logo">
+            <img src="logo-sira.jpeg" alt="Logo SIRA" class="logo-header">
+            <span>SIRA</span>
+        </div>
+
+        <!-- Estadísticas Gamificadas del Estudiante -->
+        <div class="student-stats">
+            <div class="stat-badge" title="Días seguidos aprendiendo">
+                🔥 <span>5 Días</span>
+            </div>
+            <div class="stat-badge" title="Puntos ganados">
+                ⭐ <span>450 Pts</span>
+            </div>
+            <div class="stat-badge" title="Gemas ganadas">
+                💎 <span>12</span>
+            </div>
+        </div>
+
+        <div class="user-profile-menu">
+            <div class="avatar">S</div>
+            <a href="index_1.html" class="btn-logout">Salir</a>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="dashboard-container">
+
+        <!-- Banner de Bienvenida -->
+        <section class="welcome-card">
+            <div class="welcome-text">
+                <h1>¡Hola, Mateo! 👋</h1>
+                <p>¡Sigue así! Estás muy cerca de completar el Nivel 2.</p>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill"></div>
+                </div>
+            </div>
+            <div style="font-size: 70px;">🎨</div>
+        </section>
+
+        <!-- Módulos de Aprendizaje -->
+        <h2 class="section-title">🚀 Tus Cursos de Hoy</h2>
+
+        <div class="modules-grid">
+            
+            <!-- Módulo 1 -->
+            <div class="module-card">
+                <div>
+                    <div class="module-icon">🤟</div>
+                    <h3>Lengua de Señas</h3>
+                    <p>Aprende las vocales, saludos y palabras básicas de manera divertida con video-guías.</p>
+                </div>
+                <a href="#" class="btn-start">Continuar Lección</a>
+            </div>
+
+            <!-- Módulo 2 -->
+            <div class="module-card">
+                <div>
+                    <div class="module-icon">🗣️</div>
+                    <h3>Aprende a Comunicarte</h3>
+                    <p>Ejercicios interactivos de sonidos, palabras y tarjetas pictográficas digitales.</p>
+                </div>
+                <a href="#" class="btn-start">Continuar Lección</a>
+            </div>
+
+            <!-- Módulo 3 -->
+            <div class="module-card">
+                <div>
+                    <div class="module-icon">🧩</div>
+                    <h3>Juegos y Desafíos</h3>
+                    <p>Resuelve rompecabezas, asocia objetos y acumula puntos mientras juegas.</p>
+                </div>
+                <a href="#" class="btn-start">Jugar Ahora</a>
+            </div>
+
+        </div>
+
+        <!-- Logros y Recompensas -->
+        <section class="achievements-section">
+            <h2 class="section-title">🏆 Tus Insignias</h2>
+            <div class="badges-grid">
+                
+                <div class="badge-item">
+                    <div class="badge-icon">🌟</div>
+                    <p>Primera Lección</p>
+                </div>
+
+                <div class="badge-item">
+                    <div class="badge-icon">🔥</div>
+                    <p>Racha 5 Días</p>
+                </div>
+
+                <div class="badge-item">
+                    <div class="badge-icon">🎨</div>
+                    <p>Creador</p>
+                </div>
+
+                <div class="badge-item badge-locked">
+                    <div class="badge-icon">🔒</div>
+                    <p>Experto Señas</p>
+                </div>
+
+                <div class="badge-item badge-locked">
+                    <div class="badge-icon">🔒</div>
+                    <p>Super Campéon</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- PIE DE PÁGINA / FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="logo">
+                <img src="logo-sira.jpeg" alt="Logo SIRA" class="logo-header">
+                <span>SIRA</span>
+            </div>
+            <p>Plataforma educativa inclusiva pensada para ti.</p>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 SIRA. ¡Aprende, juega e incluye!</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
